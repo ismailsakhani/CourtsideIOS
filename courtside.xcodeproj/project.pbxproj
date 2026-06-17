@@ -37,6 +37,7 @@
 		8488CFC32FE2F18C00A93958 /* PlusJakartaSans-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8488CFA22FE2F18C00A93958 /* PlusJakartaSans-ExtraLightItalic.ttf */; };
 		8488CFC42FE2F18C00A93958 /* PinyonScript-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8488CF9B2FE2F18C00A93958 /* PinyonScript-Regular.ttf */; };
 		8488CFC52FE2F18C00A93958 /* PlusJakartaSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8488CFA62FE2F18C00A93958 /* PlusJakartaSans-Medium.ttf */; };
+		8488CFD22FE3147B00A93958 /* UpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD02FE3147B00A93958 /* UpdatesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		8488CFAA2FE2F18C00A93958 /* PlusJakartaSans-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		8488CFAD2FE2F18C00A93958 /* PlusJakartaSans-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		8488CFAE2FE2F18C00A93958 /* PlusJakartaSans-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		8488CFD02FE3147B00A93958 /* UpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -245,6 +247,7 @@
 		8488CF842FE2EB1E00A93958 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				8488CFD12FE3147B00A93958 /* Updates */,
 				8488CF7D2FE2EB1E00A93958 /* Authentication */,
 				8488CF7E2FE2EB1E00A93958 /* Booking */,
 				8488CF7F2FE2EB1E00A93958 /* Community */,
@@ -346,6 +349,14 @@
 			children = (
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		8488CFD12FE3147B00A93958 /* Updates */ = {
+			isa = PBXGroup;
+			children = (
+				8488CFD02FE3147B00A93958 /* UpdatesView.swift */,
+			);
+			path = Updates;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -507,6 +518,7 @@
 				8488CF902FE2EB1E00A93958 /* Court.swift in Sources */,
 				8488CF912FE2EB1E00A93958 /* Typography.swift in Sources */,
 				8488CF922FE2EB1E00A93958 /* APIClient.swift in Sources */,
+				8488CFD22FE3147B00A93958 /* UpdatesView.swift in Sources */,
 				8488CF932FE2EB1E00A93958 /* Colors.swift in Sources */,
 				8488CF942FE2EB1E00A93958 /* HomeView.swift in Sources */,
 				8488CF952FE2EB1E00A93958 /* DependencyContainer.swift in Sources */,

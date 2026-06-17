@@ -1,6 +1,8 @@
 import SwiftUI
 
 public struct HomeView: View {
+    @State private var showUpdates = false
+    
     public init() {}
     
     public var body: some View {
@@ -17,7 +19,7 @@ public struct HomeView: View {
                     Spacer()
                     
                     Button(action: {
-                        // Notifications action
+                        showUpdates = true
                     }) {
                         Image(systemName: "bell")
                             .font(.system(size: 24, weight: .light))
@@ -107,6 +109,9 @@ public struct HomeView: View {
                     }
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showUpdates) {
+            UpdatesView()
         }
     }
 }
