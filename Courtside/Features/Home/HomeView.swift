@@ -1,9 +1,12 @@
 import SwiftUI
 
 public struct HomeView: View {
+    @Binding var selectedTab: Int
     @State private var showUpdates = false
     
-    public init() {}
+    public init(selectedTab: Binding<Int>) {
+        self._selectedTab = selectedTab
+    }
     
     public var body: some View {
         ZStack {
@@ -44,7 +47,7 @@ public struct HomeView: View {
                             
                             // The Primary Action
                             PrimaryButton(title: "Reserve a Court") {
-                                // Action
+                                selectedTab = 1
                             }
                         }
                         .padding(.top, 8) // Moved up slightly more

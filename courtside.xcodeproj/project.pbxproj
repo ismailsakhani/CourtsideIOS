@@ -38,6 +38,15 @@
 		8488CFC42FE2F18C00A93958 /* PinyonScript-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8488CF9B2FE2F18C00A93958 /* PinyonScript-Regular.ttf */; };
 		8488CFC52FE2F18C00A93958 /* PlusJakartaSans-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8488CFA62FE2F18C00A93958 /* PlusJakartaSans-Medium.ttf */; };
 		8488CFD22FE3147B00A93958 /* UpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD02FE3147B00A93958 /* UpdatesView.swift */; };
+		8488CFDA2FE3220F00A93958 /* SlotPillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD72FE3220F00A93958 /* SlotPillView.swift */; };
+		8488CFDB2FE3220F00A93958 /* CategorySelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD32FE3220F00A93958 /* CategorySelectorView.swift */; };
+		8488CFDC2FE3220F00A93958 /* PlayModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD52FE3220F00A93958 /* PlayModels.swift */; };
+		8488CFDD2FE3220F00A93958 /* DateStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD42FE3220F00A93958 /* DateStripView.swift */; };
+		8488CFDE2FE3220F00A93958 /* TimeSlotListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD82FE3220F00A93958 /* TimeSlotListView.swift */; };
+		8488CFDF2FE3220F00A93958 /* PlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFD62FE3220F00A93958 /* PlayView.swift */; };
+		8488CFE32FE3359F00A93958 /* FloatingCartPillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE22FE3359F00A93958 /* FloatingCartPillView.swift */; };
+		8488CFE42FE3359F00A93958 /* CheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE12FE3359F00A93958 /* CheckoutView.swift */; };
+		8488CFE52FE3359F00A93958 /* BookingCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE02FE3359F00A93958 /* BookingCart.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +101,15 @@
 		8488CFAD2FE2F18C00A93958 /* PlusJakartaSans-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		8488CFAE2FE2F18C00A93958 /* PlusJakartaSans-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "PlusJakartaSans-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		8488CFD02FE3147B00A93958 /* UpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatesView.swift; sourceTree = "<group>"; };
+		8488CFD32FE3220F00A93958 /* CategorySelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategorySelectorView.swift; sourceTree = "<group>"; };
+		8488CFD42FE3220F00A93958 /* DateStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateStripView.swift; sourceTree = "<group>"; };
+		8488CFD52FE3220F00A93958 /* PlayModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayModels.swift; sourceTree = "<group>"; };
+		8488CFD62FE3220F00A93958 /* PlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayView.swift; sourceTree = "<group>"; };
+		8488CFD72FE3220F00A93958 /* SlotPillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlotPillView.swift; sourceTree = "<group>"; };
+		8488CFD82FE3220F00A93958 /* TimeSlotListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSlotListView.swift; sourceTree = "<group>"; };
+		8488CFE02FE3359F00A93958 /* BookingCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingCart.swift; sourceTree = "<group>"; };
+		8488CFE12FE3359F00A93958 /* CheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutView.swift; sourceTree = "<group>"; };
+		8488CFE22FE3359F00A93958 /* FloatingCartPillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCartPillView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,6 +265,7 @@
 		8488CF842FE2EB1E00A93958 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				8488CFD92FE3220F00A93958 /* Play */,
 				8488CFD12FE3147B00A93958 /* Updates */,
 				8488CF7D2FE2EB1E00A93958 /* Authentication */,
 				8488CF7E2FE2EB1E00A93958 /* Booking */,
@@ -357,6 +376,22 @@
 				8488CFD02FE3147B00A93958 /* UpdatesView.swift */,
 			);
 			path = Updates;
+			sourceTree = "<group>";
+		};
+		8488CFD92FE3220F00A93958 /* Play */ = {
+			isa = PBXGroup;
+			children = (
+				8488CFE02FE3359F00A93958 /* BookingCart.swift */,
+				8488CFE12FE3359F00A93958 /* CheckoutView.swift */,
+				8488CFE22FE3359F00A93958 /* FloatingCartPillView.swift */,
+				8488CFD32FE3220F00A93958 /* CategorySelectorView.swift */,
+				8488CFD42FE3220F00A93958 /* DateStripView.swift */,
+				8488CFD52FE3220F00A93958 /* PlayModels.swift */,
+				8488CFD62FE3220F00A93958 /* PlayView.swift */,
+				8488CFD72FE3220F00A93958 /* SlotPillView.swift */,
+				8488CFD82FE3220F00A93958 /* TimeSlotListView.swift */,
+			);
+			path = Play;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -517,11 +552,20 @@
 				8488CF8F2FE2EB1E00A93958 /* User.swift in Sources */,
 				8488CF902FE2EB1E00A93958 /* Court.swift in Sources */,
 				8488CF912FE2EB1E00A93958 /* Typography.swift in Sources */,
+				8488CFDA2FE3220F00A93958 /* SlotPillView.swift in Sources */,
+				8488CFDB2FE3220F00A93958 /* CategorySelectorView.swift in Sources */,
+				8488CFDC2FE3220F00A93958 /* PlayModels.swift in Sources */,
+				8488CFDD2FE3220F00A93958 /* DateStripView.swift in Sources */,
+				8488CFDE2FE3220F00A93958 /* TimeSlotListView.swift in Sources */,
+				8488CFDF2FE3220F00A93958 /* PlayView.swift in Sources */,
 				8488CF922FE2EB1E00A93958 /* APIClient.swift in Sources */,
 				8488CFD22FE3147B00A93958 /* UpdatesView.swift in Sources */,
 				8488CF932FE2EB1E00A93958 /* Colors.swift in Sources */,
 				8488CF942FE2EB1E00A93958 /* HomeView.swift in Sources */,
 				8488CF952FE2EB1E00A93958 /* DependencyContainer.swift in Sources */,
+				8488CFE32FE3359F00A93958 /* FloatingCartPillView.swift in Sources */,
+				8488CFE42FE3359F00A93958 /* CheckoutView.swift in Sources */,
+				8488CFE52FE3359F00A93958 /* BookingCart.swift in Sources */,
 				8488CF962FE2EB1E00A93958 /* CourtsideApp.swift in Sources */,
 				8488CF972FE2EB1E00A93958 /* View+Extensions.swift in Sources */,
 				8488CF982FE2EB1E00A93958 /* MainTabView.swift in Sources */,
