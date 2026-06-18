@@ -3,6 +3,7 @@ import SwiftUI
 public struct LoungeView: View {
     @EnvironmentObject var cart: BookingCart
     @State private var selectedDish: MenuItem?
+    @State private var selectedEvent: EventItem?
     
     public init() {}
     
@@ -101,24 +102,11 @@ public struct LoungeView: View {
                                 .padding(.bottom, 32)
                             
                             VStack(spacing: 0) {
-                                EventListRow(
-                                    date: "FRI, 20 JUN",
-                                    time: "7:00 PM",
-                                    title: "Summer Solstice Mixer",
-                                    location: "The Lounge"
-                                )
-                                EventListRow(
-                                    date: "SAT, 21 JUN",
-                                    time: "5:00 PM",
-                                    title: "Pro Exhibition Match",
-                                    location: "Center Court"
-                                )
-                                EventListRow(
-                                    date: "SUN, 22 JUN",
-                                    time: "9:00 AM",
-                                    title: "Beginner's Clinic",
-                                    location: "Courts 1 & 2"
-                                )
+                                ForEach(allEventsData[0].events) { event in
+                                    EventListRow(event: event) {
+                                        selectedEvent = event
+                                    }
+                                }
                                 
                                 NavigationLink(destination: AllEventsView()) {
                                     HStack(spacing: 8) {
@@ -154,6 +142,11 @@ public struct LoungeView: View {
             }
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $selectedEvent) { event in
+            EventDetailSheet(event: event)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
     }
     
@@ -250,49 +243,52 @@ public struct MenuRowView: View {
 }
 
 public struct EventListRow: View {
-    let date: String
-    let time: String
-    let title: String
-    let location: String
+    let event: EventItem
+    let onRowTapped: () -> Void
     
     public var body: some View {
-        VStack(spacing: 0) {
-            HStack(alignment: .top, spacing: 24) {
-                // Date & Time Column
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(date)
-                        .font(.custom("PlusJakartaSans-SemiBold", size: 14))
-                        .foregroundColor(.Courtside.primary)
-                    Text(time)
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textSecondary)
-                }
-                .frame(width: 100, alignment: .leading)
-                
-                // Details Column
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                        .font(.custom("PlusJakartaSans-Regular", size: 20))
-                        .foregroundColor(.Courtside.textPrimary)
-                        .lineLimit(2)
-                    
-                    HStack(spacing: 6) {
-                        Image(systemName: "mappin.and.ellipse")
-                            .font(.system(size: 12))
-                        Text(location)
+        Button(action: onRowTapped) {
+            VStack(spacing: 0) {
+                HStack(alignment: .top, spacing: 24) {
+                    // Date & Time Column
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("\(event.day) \(event.month)")
+                            .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+                            .foregroundColor(.Courtside.primary)
+                        Text(event.time)
                             .font(.custom("PlusJakartaSans-Regular", size: 14))
+                            .foregroundColor(.Courtside.textSecondary)
                     }
-                    .foregroundColor(.Courtside.textSecondary)
+                    .frame(width: 100, alignment: .leading)
+                    
+                    // Details Column
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(event.title)
+                            .font(.custom("PlusJakartaSans-Regular", size: 20))
+                            .foregroundColor(.Courtside.textPrimary)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                        
+                        HStack(spacing: 6) {
+                            Image(systemName: "mappin.and.ellipse")
+                                .font(.system(size: 12))
+                            Text(event.location)
+                                .font(.custom("PlusJakartaSans-Regular", size: 14))
+                        }
+                        .foregroundColor(.Courtside.textSecondary)
+                    }
+                    
+                    Spacer()
                 }
-                
-                Spacer()
-            }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 24)
-            
-            Divider()
                 .padding(.horizontal, 24)
+                .padding(.vertical, 24)
+                .contentShape(Rectangle())
+                
+                Divider()
+                    .padding(.horizontal, 24)
+            }
         }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -533,6 +529,161 @@ public struct FullMenuView: View {
     }
 }
 
+// MARK: - Event Detail Sheet
+
+public struct EventDetailSheet: View {
+    @Environment(\.presentationMode) var presentationMode
+    let event: EventItem
+    
+    public var body: some View {
+        ZStack {
+            Color.Courtside.background.ignoresSafeArea()
+            
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    // Flyer Image Placeholder
+                    Rectangle()
+                        .fill(Color.Courtside.textSecondary.opacity(0.04))
+                        .frame(height: 400)
+                        .overlay(
+                            VStack(spacing: 12) {
+                                Image(systemName: "photo")
+                                    .font(.system(size: 32))
+                                    .foregroundColor(.Courtside.textSecondary.opacity(0.3))
+                                Text("Event Flyer Placeholder")
+                                    .font(.custom("PlusJakartaSans-Regular", size: 12))
+                                    .foregroundColor(.Courtside.textSecondary.opacity(0.5))
+                            }
+                        )
+                        .overlay(
+                            LinearGradient(
+                                colors: [Color.Courtside.background.opacity(0), Color.Courtside.background],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                        )
+                    
+                    // Content
+                    VStack(alignment: .leading, spacing: 32) {
+                        // Header
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text(event.title)
+                                .font(.Courtside.heroDisplay)
+                                .foregroundColor(.Courtside.textPrimary)
+                            
+                            Text(event.fullDate)
+                                .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+                                .foregroundColor(.Courtside.primary)
+                                .kerning(1)
+                        }
+                        
+                        // Description
+                        Text(event.description)
+                            .font(.custom("PlusJakartaSans-Regular", size: 16))
+                            .foregroundColor(.Courtside.textSecondary)
+                            .lineSpacing(8)
+                        
+                        // Logistics Grid
+                        VStack(spacing: 16) {
+                            HStack(spacing: 16) {
+                                LogisticBadge(icon: "mappin.and.ellipse", title: "LOCATION", value: event.location)
+                                LogisticBadge(icon: "person.2", title: "HOST", value: event.host)
+                            }
+                            HStack(spacing: 16) {
+                                LogisticBadge(icon: "chart.bar", title: "LEVEL", value: event.skillLevel)
+                                LogisticBadge(icon: "ticket", title: "CAPACITY", value: event.capacity)
+                            }
+                        }
+                        .padding(.top, 16)
+                    }
+                    .padding(32)
+                    .padding(.bottom, 120) // Space for RSVP button
+                }
+            }
+            
+            // Close Button
+            VStack {
+                HStack {
+                    Spacer()
+                    Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.Courtside.textPrimary)
+                            .padding(16)
+                            .background(Color.Courtside.background)
+                            .clipShape(Circle())
+                            .shadow(color: Color.black.opacity(0.1), radius: 10, x: 0, y: 4)
+                    }
+                }
+                .padding(24)
+                Spacer()
+            }
+            
+            // Sticky RSVP Button
+            VStack {
+                Spacer()
+                
+                VStack(spacing: 0) {
+                    LinearGradient(
+                        colors: [Color.Courtside.background.opacity(0), Color.Courtside.background],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                    .frame(height: 40)
+                    
+                    VStack {
+                        Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                            Text("RSVP — \(event.price)")
+                                .font(.custom("PlusJakartaSans-Bold", size: 14))
+                                .foregroundColor(.Courtside.background)
+                                .kerning(1.5)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 20)
+                                .background(Color.Courtside.primary)
+                                .clipShape(Capsule())
+                                .shadow(color: Color.black.opacity(0.2), radius: 24, y: 12)
+                        }
+                    }
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 40)
+                    .background(Color.Courtside.background)
+                }
+            }
+            .ignoresSafeArea(edges: .bottom)
+        }
+    }
+}
+
+private struct LogisticBadge: View {
+    let icon: String
+    let title: String
+    let value: String
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 16))
+                .foregroundColor(.Courtside.primary)
+                .frame(width: 24)
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.custom("PlusJakartaSans-Bold", size: 10))
+                    .foregroundColor(.Courtside.textSecondary)
+                    .kerning(1)
+                
+                Text(value)
+                    .font(.custom("PlusJakartaSans-SemiBold", size: 13))
+                    .foregroundColor(.Courtside.textPrimary)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(16)
+        .background(Color.Courtside.textSecondary.opacity(0.04))
+        .cornerRadius(16)
+    }
+}
+
 // MARK: - All Events Data Models
 
 struct EventItem: Identifiable {
@@ -543,6 +694,14 @@ struct EventItem: Identifiable {
     let time: String
     let location: String
     let isFeatured: Bool
+    
+    // New Fields
+    let fullDate: String
+    let description: String
+    let host: String
+    let skillLevel: String
+    let capacity: String
+    let price: String
 }
 
 struct EventSection: Identifiable {
@@ -553,21 +712,109 @@ struct EventSection: Identifiable {
 
 let allEventsData: [EventSection] = [
     EventSection(title: "THIS WEEK", events: [
-        EventItem(day: "20", month: "JUN", title: "Summer Solstice Mixer", time: "7:00 PM", location: "The Lounge", isFeatured: false),
-        EventItem(day: "21", month: "JUN", title: "Pro Exhibition Match", time: "5:00 PM", location: "Center Court", isFeatured: false),
-        EventItem(day: "22", month: "JUN", title: "Sunday Morning Recovery Flow", time: "8:00 AM", location: "Wellness Studio", isFeatured: false)
+        EventItem(
+            day: "20", month: "JUN", title: "Summer Solstice Mixer", time: "7:00 PM", location: "The Lounge", isFeatured: false,
+            fullDate: "FRIDAY, JUNE 20 AT 7:00 PM",
+            description: "Celebrate the longest day of the year with our signature matcha cocktails, curated small plates, and live acoustic music. A perfect evening to mingle with fellow members as the sun sets over the courts.",
+            host: "The Optimist Cafe",
+            skillLevel: "All Levels",
+            capacity: "50 Spots",
+            price: "Free for Members"
+        ),
+        EventItem(
+            day: "21", month: "JUN", title: "Pro Exhibition Match", time: "5:00 PM", location: "Center Court", isFeatured: false,
+            fullDate: "SATURDAY, JUNE 21 AT 5:00 PM",
+            description: "Experience world-class tennis right here at home. Watch top-ranked local pros battle it out in a high-stakes exhibition match. VIP courtside seating includes champagne and canapés.",
+            host: "Courtside Athletics",
+            skillLevel: "Spectator",
+            capacity: "200 Spots",
+            price: "₹1,500"
+        ),
+        EventItem(
+            day: "22", month: "JUN", title: "Sunday Recovery Flow", time: "8:00 AM", location: "Wellness Studio", isFeatured: false,
+            fullDate: "SUNDAY, JUNE 22 AT 8:00 AM",
+            description: "A 60-minute athletic yoga sequence designed specifically for padel and tennis players. Focus on mobility, deep fascial stretching, and breathwork to accelerate your post-match recovery.",
+            host: "Dr. Elena Rostova",
+            skillLevel: "All Levels",
+            capacity: "15 Spots",
+            price: "₹800"
+        )
     ]),
     EventSection(title: "UPCOMING HIGHLIGHTS", events: [
-        EventItem(day: "28", month: "JUN", title: "The Optimist Summer Gala", time: "8:00 PM", location: "Main Clubhouse", isFeatured: true),
-        EventItem(day: "04", month: "JUL", title: "Courtside Wine Tasting", time: "6:30 PM", location: "The Lounge", isFeatured: false),
-        EventItem(day: "12", month: "JUL", title: "Members' Mixed Doubles", time: "9:00 AM", location: "Courts 1-4", isFeatured: false),
-        EventItem(day: "18", month: "JUL", title: "Friday Night DJ Sessions", time: "8:00 PM", location: "Courtside Bar", isFeatured: false)
+        EventItem(
+            day: "28", month: "JUN", title: "The Optimist Summer Gala", time: "8:00 PM", location: "Main Clubhouse", isFeatured: true,
+            fullDate: "SATURDAY, JUNE 28 AT 8:00 PM",
+            description: "Our highly anticipated annual black-tie event. An evening of uncompromised luxury featuring a five-course tasting menu, an open premium bar, and a live jazz orchestra under the stars.",
+            host: "The Board of Directors",
+            skillLevel: "All Levels",
+            capacity: "120 Spots",
+            price: "₹15,000"
+        ),
+        EventItem(
+            day: "04", month: "JUL", title: "Courtside Wine Tasting", time: "6:30 PM", location: "The Lounge", isFeatured: false,
+            fullDate: "THURSDAY, JULY 4 AT 6:30 PM",
+            description: "Join our resident sommelier for an exclusive journey through the vineyards of Tuscany. Includes tasting flights of 5 premium Italian wines perfectly paired with artisanal cheeses and truffles.",
+            host: "Sommelier Marco Rossi",
+            skillLevel: "All Levels",
+            capacity: "24 Spots",
+            price: "₹3,500"
+        ),
+        EventItem(
+            day: "12", month: "JUL", title: "Members' Mixed Doubles", time: "9:00 AM", location: "Courts 1-4", isFeatured: false,
+            fullDate: "SUNDAY, JULY 12 AT 9:00 AM",
+            description: "Our signature monthly tournament. Grab a partner and compete in a round-robin style mixed doubles event. The morning concludes with an awards brunch at The Optimist.",
+            host: "Head Coach Marcus",
+            skillLevel: "Intermediate+",
+            capacity: "32 Teams",
+            price: "₹2,000 / Team"
+        ),
+        EventItem(
+            day: "18", month: "JUL", title: "Friday Night DJ Sessions", time: "8:00 PM", location: "Courtside Bar", isFeatured: false,
+            fullDate: "FRIDAY, JULY 18 AT 8:00 PM",
+            description: "Trade your sweatbands for something sleek. Transition from the courts to the club with live DJ sets, curated cocktails, and an electric atmosphere to kick off your weekend.",
+            host: "DJ AURA",
+            skillLevel: "All Levels",
+            capacity: "80 Spots",
+            price: "Free Entry"
+        )
     ]),
     EventSection(title: "CLINICS & WELLNESS", events: [
-        EventItem(day: "25", month: "JUL", title: "Beginner's Masterclass", time: "10:00 AM", location: "Court 2", isFeatured: false),
-        EventItem(day: "26", month: "JUL", title: "Breathwork & Cold Plunge", time: "7:00 AM", location: "Recovery Deck", isFeatured: false),
-        EventItem(day: "02", month: "AUG", title: "Matcha Tasting & Networking", time: "11:00 AM", location: "The Lounge", isFeatured: false),
-        EventItem(day: "09", month: "AUG", title: "Advanced Tactics Clinic", time: "4:00 PM", location: "Center Court", isFeatured: false)
+        EventItem(
+            day: "25", month: "JUL", title: "Beginner's Masterclass", time: "10:00 AM", location: "Court 2", isFeatured: false,
+            fullDate: "SATURDAY, JULY 25 AT 10:00 AM",
+            description: "Never held a racket? No problem. This 90-minute intensive breaks down the absolute fundamentals of grip, stance, and swing mechanics in a highly supportive, low-pressure environment.",
+            host: "Coach Sarah Jenkins",
+            skillLevel: "Beginner",
+            capacity: "8 Spots",
+            price: "₹1,200"
+        ),
+        EventItem(
+            day: "26", month: "JUL", title: "Breathwork & Cold Plunge", time: "7:00 AM", location: "Recovery Deck", isFeatured: false,
+            fullDate: "SUNDAY, JULY 26 AT 7:00 AM",
+            description: "Master your nervous system. A guided 30-minute Wim Hof style breathwork session followed by a structured 3-minute plunge in our state-of-the-art ice baths. Breakfast included.",
+            host: "Coach David Chen",
+            skillLevel: "All Levels",
+            capacity: "12 Spots",
+            price: "₹1,000"
+        ),
+        EventItem(
+            day: "02", month: "AUG", title: "Matcha Tasting & Networking", time: "11:00 AM", location: "The Lounge", isFeatured: false,
+            fullDate: "SUNDAY, AUGUST 2 AT 11:00 AM",
+            description: "A serene morning learning the ancient art of preparing ceremonial grade Uji matcha. Connect with fellow members and entrepreneurs while enjoying exclusive, off-menu matcha creations.",
+            host: "The Optimist Cafe",
+            skillLevel: "All Levels",
+            capacity: "20 Spots",
+            price: "₹800"
+        ),
+        EventItem(
+            day: "09", month: "AUG", title: "Advanced Tactics Clinic", time: "4:00 PM", location: "Center Court", isFeatured: false,
+            fullDate: "SUNDAY, AUGUST 9 AT 4:00 PM",
+            description: "An elite clinic strictly for advanced players. Focus on high-percentage shot selection, transitional footwork, and aggressive net play strategies used on the professional tour.",
+            host: "Head Coach Marcus",
+            skillLevel: "Advanced",
+            capacity: "6 Spots",
+            price: "₹2,500"
+        )
     ])
 ]
 
@@ -685,6 +932,7 @@ public struct HeroEventCard: View {
 
 public struct AllEventsView: View {
     @Environment(\.presentationMode) var presentationMode
+    @State private var selectedEvent: EventItem?
     
     public var body: some View {
         ZStack {
@@ -719,16 +967,21 @@ public struct AllEventsView: View {
                                 // Section Items
                                 VStack(spacing: 16) {
                                     ForEach(section.events) { event in
-                                        if event.isFeatured {
-                                            HeroEventCard(event: event)
-                                                .padding(.horizontal, 24)
-                                                .padding(.bottom, 16)
-                                        } else {
-                                            EditorialEventRow(event: event)
-                                                .padding(.horizontal, 24)
+                                        VStack(spacing: 0) {
+                                            Button(action: { selectedEvent = event }) {
+                                                if event.isFeatured {
+                                                    HeroEventCard(event: event)
+                                                        .padding(.horizontal, 24)
+                                                        .padding(.bottom, 16)
+                                                } else {
+                                                    EditorialEventRow(event: event)
+                                                        .padding(.horizontal, 24)
+                                                }
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
                                             
                                             // Subtle divider between standard rows
-                                            if event.id != section.events.last?.id {
+                                            if !event.isFeatured && event.id != section.events.last?.id {
                                                 Rectangle()
                                                     .fill(Color.Courtside.textSecondary.opacity(0.08))
                                                     .frame(height: 1)
@@ -758,6 +1011,11 @@ public struct AllEventsView: View {
                         .contentShape(Rectangle())
                 }
             }
+        }
+        .sheet(item: $selectedEvent) { event in
+            EventDetailSheet(event: event)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 public struct HomeView: View {
     @Binding var selectedTab: Int
     @State private var showUpdates = false
+    @State private var selectedEvent: EventItem?
     
     public init(selectedTab: Binding<Int>) {
         self._selectedTab = selectedTab
@@ -79,23 +80,12 @@ public struct HomeView: View {
                                 
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     HStack(spacing: 24) {
-                                        EventCarouselCard(
-                                            title: "Summer Solstice Mixer",
-                                            date: "FRI, 20 JUN • 7:00 PM",
-                                            location: "Lounge Area"
-                                        )
-                                        
-                                        EventCarouselCard(
-                                            title: "Pro Exhibition Match",
-                                            date: "SAT, 21 JUN • 5:00 PM",
-                                            location: "Center Court"
-                                        )
-                                        
-                                        EventCarouselCard(
-                                            title: "Beginner's Clinic",
-                                            date: "SUN, 22 JUN • 9:00 AM",
-                                            location: "Court 1 & 2"
-                                        )
+                                        ForEach(allEventsData[0].events) { event in
+                                            Button(action: { selectedEvent = event }) {
+                                                EventCarouselCard(event: event)
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
                                     }
                                     .padding(.horizontal, 24)
                                     .padding(.vertical, 32) // Give shadows room to breathe
@@ -121,6 +111,11 @@ public struct HomeView: View {
         }
         .fullScreenCover(isPresented: $showUpdates) {
             UpdatesView()
+        }
+        .sheet(item: $selectedEvent) { event in
+            EventDetailSheet(event: event)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
         }
     }
 }
@@ -189,26 +184,22 @@ public struct BookingTicketCard: View {
     }
 }
 
-public struct EventCarouselCard: View {
-    let title: String
-    let date: String
-    let location: String
+struct EventCarouselCard: View {
+    let event: EventItem
     
-    public init(title: String, date: String, location: String) {
-        self.title = title
-        self.date = date
-        self.location = location
+    init(event: EventItem) {
+        self.event = event
     }
     
-    public var body: some View {
+    var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(date)
+                Text("\(event.day) \(event.month) • \(event.time)")
                     .font(.custom("PlusJakartaSans-Regular", size: 12))
                     .foregroundColor(.Courtside.primary)
                     .kerning(1.5)
                 
-                Text(title)
+                Text(event.title)
                     .font(.custom("PlusJakartaSans-Regular", size: 24))
                     .foregroundColor(.Courtside.textPrimary)
                     .lineLimit(2)
@@ -217,7 +208,7 @@ public struct EventCarouselCard: View {
             Spacer()
             
             HStack {
-                Text(location)
+                Text(event.location)
                     .font(.custom("PlusJakartaSans-Regular", size: 14))
                     .foregroundColor(.Courtside.textSecondary)
                 
