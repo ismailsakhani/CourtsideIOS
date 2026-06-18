@@ -47,6 +47,8 @@
 		8488CFE32FE3359F00A93958 /* FloatingCartPillView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE22FE3359F00A93958 /* FloatingCartPillView.swift */; };
 		8488CFE42FE3359F00A93958 /* CheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE12FE3359F00A93958 /* CheckoutView.swift */; };
 		8488CFE52FE3359F00A93958 /* BookingCart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE02FE3359F00A93958 /* BookingCart.swift */; };
+		8488CFE82FE403D100A93958 /* LoungeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8488CFE62FE403D100A93958 /* LoungeView.swift */; };
+		8488CFEE2FE4151B00A93958 /* lounge_hero.png in Resources */ = {isa = PBXBuildFile; fileRef = 8488CFED2FE4151B00A93958 /* lounge_hero.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -110,6 +112,8 @@
 		8488CFE02FE3359F00A93958 /* BookingCart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingCart.swift; sourceTree = "<group>"; };
 		8488CFE12FE3359F00A93958 /* CheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutView.swift; sourceTree = "<group>"; };
 		8488CFE22FE3359F00A93958 /* FloatingCartPillView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingCartPillView.swift; sourceTree = "<group>"; };
+		8488CFE62FE403D100A93958 /* LoungeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoungeView.swift; sourceTree = "<group>"; };
+		8488CFED2FE4151B00A93958 /* lounge_hero.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lounge_hero.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,13 +237,6 @@
 			path = Booking;
 			sourceTree = "<group>";
 		};
-		8488CF7F2FE2EB1E00A93958 /* Community */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Community;
-			sourceTree = "<group>";
-		};
 		8488CF812FE2EB1E00A93958 /* Home */ = {
 			isa = PBXGroup;
 			children = (
@@ -265,11 +262,11 @@
 		8488CF842FE2EB1E00A93958 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				8488CFE72FE403D100A93958 /* Lounge */,
 				8488CFD92FE3220F00A93958 /* Play */,
 				8488CFD12FE3147B00A93958 /* Updates */,
 				8488CF7D2FE2EB1E00A93958 /* Authentication */,
 				8488CF7E2FE2EB1E00A93958 /* Booking */,
-				8488CF7F2FE2EB1E00A93958 /* Community */,
 				8488CF812FE2EB1E00A93958 /* Home */,
 				8488CF822FE2EB1E00A93958 /* Matchmaking */,
 				8488CF832FE2EB1E00A93958 /* Profile */,
@@ -280,6 +277,7 @@
 		8488CF862FE2EB1E00A93958 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				8488CFED2FE4151B00A93958 /* lounge_hero.png */,
 				8488CFB12FE2F18C00A93958 /* Pinyon_Script,Plus_Jakarta_Sans */,
 			);
 			path = Resources;
@@ -392,6 +390,14 @@
 				8488CFD82FE3220F00A93958 /* TimeSlotListView.swift */,
 			);
 			path = Play;
+			sourceTree = "<group>";
+		};
+		8488CFE72FE403D100A93958 /* Lounge */ = {
+			isa = PBXGroup;
+			children = (
+				8488CFE62FE403D100A93958 /* LoungeView.swift */,
+			);
+			path = Lounge;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -520,6 +526,7 @@
 				8488CFC12FE2F18C00A93958 /* PlusJakartaSans-BoldItalic.ttf in Resources */,
 				8488CFC22FE2F18C00A93958 /* PlusJakartaSans-VariableFont_wght.ttf in Resources */,
 				8488CFC32FE2F18C00A93958 /* PlusJakartaSans-ExtraLightItalic.ttf in Resources */,
+				8488CFEE2FE4151B00A93958 /* lounge_hero.png in Resources */,
 				8488CFC42FE2F18C00A93958 /* PinyonScript-Regular.ttf in Resources */,
 				8488CFC52FE2F18C00A93958 /* PlusJakartaSans-Medium.ttf in Resources */,
 			);
@@ -546,6 +553,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8488CFE82FE403D100A93958 /* LoungeView.swift in Sources */,
 				8488CF8C2FE2EB1E00A93958 /* PrimaryButton.swift in Sources */,
 				8488CF8D2FE2EB1E00A93958 /* Booking.swift in Sources */,
 				8488CF8E2FE2EB1E00A93958 /* CourtCard.swift in Sources */,

@@ -25,11 +25,11 @@ public struct MainTabView: View {
                         Text("Play")
                     }
                 
-                Text("Community")
+                LoungeView()
                     .tag(2)
                     .tabItem {
-                        Image(systemName: "person.3")
-                        Text("Community")
+                        Image(systemName: "cup.and.saucer.fill")
+                        Text("Lounge")
                     }
                 
                 Text("Profile")
