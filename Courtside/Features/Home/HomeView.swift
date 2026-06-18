@@ -69,9 +69,11 @@ public struct HomeView: View {
                                         .foregroundColor(.Courtside.textSecondary)
                                         .kerning(2)
                                     Spacer()
-                                    Text("View All")
-                                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                                        .foregroundColor(.Courtside.textPrimary)
+                                    NavigationLink(destination: AllEventsView()) {
+                                        Text("View All")
+                                            .font(.custom("PlusJakartaSans-Regular", size: 14))
+                                            .foregroundColor(.Courtside.textPrimary)
+                                    }
                                 }
                                 .padding(.horizontal, 24)
                                 
