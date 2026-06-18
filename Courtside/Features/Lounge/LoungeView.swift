@@ -64,6 +64,18 @@ public struct LoungeView: View {
                                 ) {
                                     preOrder(item: "Acai Bowl", price: 650)
                                 }
+                                
+                                NavigationLink(destination: FullMenuView()) {
+                                    HStack(spacing: 8) {
+                                        Text("View full menu")
+                                            .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+                                        Image(systemName: "arrow.right")
+                                            .font(.system(size: 12, weight: .bold))
+                                    }
+                                    .foregroundColor(.Courtside.primary)
+                                    .padding(.top, 8)
+                                    .frame(maxWidth: .infinity, alignment: .center)
+                                }
                             }
                             .padding(.horizontal, 24)
                         }
@@ -216,6 +228,52 @@ public struct EventListRow: View {
             
             Divider()
                 .padding(.horizontal, 24)
+        }
+    }
+}
+
+// MARK: - Full Menu Wireframe
+
+public struct FullMenuView: View {
+    @Environment(\.presentationMode) var presentationMode
+    
+    public var body: some View {
+        ZStack {
+            Color.Courtside.background.ignoresSafeArea()
+            
+            VStack(spacing: 24) {
+                if let heroImage = UIImage(named: "lounge_hero.png") ?? UIImage(named: "lounge_hero") {
+                    Image(uiImage: heroImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 64)
+                        .padding(.horizontal, 40)
+                } else {
+                    Text("The Optimist")
+                        .font(.Courtside.heroDisplay)
+                        .foregroundColor(.Courtside.textPrimary)
+                }
+                
+                Text("Full menu data incoming...")
+                    .font(.custom("PlusJakartaSans-Regular", size: 16))
+                    .foregroundColor(.Courtside.textSecondary)
+                
+                Spacer()
+            }
+            .padding(.top, 40)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: { presentationMode.wrappedValue.dismiss() }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(.Courtside.textPrimary)
+                        .padding(8) // Increased hit area
+                        .contentShape(Rectangle())
+                }
+            }
         }
     }
 }
