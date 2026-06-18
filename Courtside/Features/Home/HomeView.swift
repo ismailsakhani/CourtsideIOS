@@ -9,33 +9,25 @@ public struct HomeView: View {
     }
     
     public var body: some View {
-        ZStack {
-            Color.Courtside.background.ignoresSafeArea()
-            
-            VStack(spacing: 0) {
-                // Fixed Top Navigation
-                HStack {
-                    Text("C")
-                        .font(.Courtside.logo)
-                        .foregroundColor(.Courtside.textPrimary)
-                    
-                    Spacer()
-                    
-                    Button(action: {
-                        showUpdates = true
-                    }) {
-                        Image(systemName: "bell")
-                            .font(.system(size: 24, weight: .light))
-                            .foregroundColor(.Courtside.textPrimary)
-                    }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 10)
-                .padding(.bottom, 24)
+        NavigationView {
+            ZStack {
+                Color.Courtside.background.ignoresSafeArea()
                 
                 // Scrollable Content
+
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 0) {
+                        
+                        // Cursive Logo (Scrolls away)
+                        HStack {
+                            Text("C")
+                                .font(.Courtside.logo)
+                                .foregroundColor(.Courtside.textPrimary)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 24)
+                        .offset(y: -52)
+                        .padding(.bottom, -24)
                         
                         // Top Half: Concierge
                         VStack(alignment: .leading, spacing: 32) {
@@ -109,6 +101,18 @@ public struct HomeView: View {
                             }
                         }
                         .padding(.bottom, 80)
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        showUpdates = true
+                    }) {
+                        Image(systemName: "bell")
+                            .font(.system(size: 20, weight: .regular))
+                            .foregroundColor(.Courtside.textPrimary)
                     }
                 }
             }

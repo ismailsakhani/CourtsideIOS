@@ -4,7 +4,7 @@ public extension Font {
     struct Courtside {
         /// Massive, confident editorial greeting (Pinyon Script)
         public static var heroDisplay: Font {
-            .custom("PinyonScript-Regular", size: 56)
+            .custom("PinyonScript-Regular", size: 72)
         }
         
         /// Top Navigation Logo (Pinyon Script)
