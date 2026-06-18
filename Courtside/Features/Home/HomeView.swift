@@ -2,8 +2,10 @@ import SwiftUI
 
 public struct HomeView: View {
     @Binding var selectedTab: Int
+    @EnvironmentObject var cart: BookingCart
     @State private var showUpdates = false
     @State private var selectedEvent: EventItem?
+    @State private var selectedDish: MenuItem?
     
     public init(selectedTab: Binding<Int>) {
         self._selectedTab = selectedTab
@@ -73,7 +75,7 @@ public struct HomeView: View {
                                     NavigationLink(destination: AllEventsView()) {
                                         Text("View All")
                                             .font(.custom("PlusJakartaSans-Regular", size: 14))
-                                            .foregroundColor(.Courtside.textPrimary)
+                                            .foregroundColor(.Courtside.primary)
                                     }
                                 }
                                 .padding(.horizontal, 24)
@@ -90,9 +92,57 @@ public struct HomeView: View {
                                     .padding(.horizontal, 24)
                                     .padding(.vertical, 32) // Give shadows room to breathe
                                 }
+                                
+                                // --- Curated Menu Section ---
+                                VStack(alignment: .leading, spacing: 24) {
+                                    HStack {
+                                        Text("CURATED TASTES")
+                                            .font(.custom("PlusJakartaSans-Regular", size: 12))
+                                            .foregroundColor(.Courtside.textSecondary)
+                                            .kerning(1.5)
+                                        
+                                        Spacer()
+                                        
+                                        NavigationLink(destination: FullMenuView()) {
+                                            Text("View All")
+                                                .font(.custom("PlusJakartaSans-Regular", size: 14))
+                                                .foregroundColor(.Courtside.primary)
+                                        }
+                                    }
+                                    .padding(.horizontal, 24)
+                                    
+                                    VStack(spacing: 16) {
+                                        if let firstDish = fullMenuData.first?.items.first {
+                                            Button(action: { selectedDish = firstDish }) {
+                                                DishSpotlightCard(dish: firstDish)
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                            .padding(.horizontal, 24)
+                                        }
+                                        
+                                        VStack(spacing: 32) {
+                                            if fullMenuData.count > 0, fullMenuData[0].items.count >= 3 {
+                                                ForEach(fullMenuData[0].items[1...2]) { dish in
+                                                    MenuRowView(
+                                                        title: dish.title,
+                                                        description: dish.description,
+                                                        price: dish.price,
+                                                        onRowTapped: { selectedDish = dish }
+                                                    ) {
+                                                        selectedDish = dish
+                                                    }
+                                                    .padding(.horizontal, 24)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                .padding(.top, 16)
+                                // -----------------------------
+                                
                             }
                         }
-                        .padding(.bottom, 80)
+                        .padding(.bottom, 120)
                     }
                 }
             }
@@ -116,6 +166,20 @@ public struct HomeView: View {
             EventDetailSheet(event: event)
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(item: $selectedDish) { dish in
+            DishDetailSheet(dish: dish) {
+                let dummyCourt = Court(id: UUID().uuidString, name: dish.title)
+                let slot = SelectedSlot(
+                    date: Date(),
+                    timeString: "Pre-order",
+                    court: dummyCourt,
+                    category: .recovery
+                )
+                withAnimation { cart.add(slot) }
+            }
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
     }
 }
@@ -228,5 +292,55 @@ struct EventCarouselCard: View {
             RoundedRectangle(cornerRadius: 24)
                 .stroke(Color.Courtside.textPrimary.opacity(0.05), lineWidth: 0.5)
         )
+    }
+}
+
+struct DishSpotlightCard: View {
+    let dish: MenuItem
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Image Placeholder
+            Rectangle()
+                .fill(Color.Courtside.textSecondary.opacity(0.04))
+                .frame(height: 240)
+                .overlay(
+                    VStack(spacing: 8) {
+                        Image(systemName: "photo")
+                            .font(.system(size: 24))
+                        Text("Chef's Pick")
+                            .font(.custom("PlusJakartaSans-Bold", size: 10))
+                            .kerning(1)
+                    }
+                    .foregroundColor(.Courtside.textSecondary.opacity(0.3))
+                )
+            
+            // Content
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .top) {
+                    Text(dish.title)
+                        .font(.custom("PlusJakartaSans-Regular", size: 24))
+                        .foregroundColor(.white)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                    
+                    Spacer()
+                    
+                    Text(dish.price)
+                        .font(.custom("PlusJakartaSans-SemiBold", size: 16))
+                        .foregroundColor(.Courtside.primary)
+                }
+                
+                Text(dish.description ?? "")
+                    .font(.custom("PlusJakartaSans-Regular", size: 14))
+                    .foregroundColor(.white.opacity(0.6))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+            .padding(24)
+            .background(Color.Courtside.primary)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .shadow(color: Color.black.opacity(0.15), radius: 24, y: 12)
     }
 }
