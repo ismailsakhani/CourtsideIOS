@@ -38,6 +38,7 @@ public struct MainTabView: View {
                 .zIndex(1)
             }
         }
+        .preferredColorScheme(.light)
         .environment(cart)
         .sheet(isPresented: $showCheckout) {
             CheckoutView()

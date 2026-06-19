@@ -69,6 +69,8 @@ public struct CheckoutView: View {
             }
             .navigationTitle("Checkout")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Color.Courtside.background, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

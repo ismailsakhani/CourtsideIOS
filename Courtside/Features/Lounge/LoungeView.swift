@@ -118,6 +118,12 @@ public struct LoungeView: View {
                 }
             }
         }
+        .overlay(alignment: .bottom) {
+            LinearGradient(colors: [.clear, Color.Courtside.background], startPoint: .top, endPoint: .bottom)
+                .frame(height: 120)
+                .allowsHitTesting(false)
+                .ignoresSafeArea()
+        }
         .sheet(item: $selectedDish) { dish in
             DishDetailSheet(dish: dish) {
                 withAnimation { cart.add(.foodItem(dish, quantity: 1)) }

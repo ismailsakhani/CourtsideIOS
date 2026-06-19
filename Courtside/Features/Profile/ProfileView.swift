@@ -168,6 +168,12 @@ public struct ProfileView: View {
             }
         }
         .ignoresSafeArea(edges: .top)
+        .overlay(alignment: .bottom) {
+            LinearGradient(colors: [.clear, Color.Courtside.background], startPoint: .top, endPoint: .bottom)
+                .frame(height: 120)
+                .allowsHitTesting(false)
+                .ignoresSafeArea()
+        }
         .sheet(isPresented: $showQRCode) {
             MembershipQRSheet()
                 .presentationDetents([.large])

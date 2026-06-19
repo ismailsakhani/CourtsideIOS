@@ -181,8 +181,15 @@ public struct HomeView: View {
                             .font(.system(size: 20, weight: .regular))
                             .foregroundStyle(.Courtside.textPrimary)
                     }
+                    .tint(Color.Courtside.textPrimary)
                 }
             }
+        }
+        .overlay(alignment: .bottom) {
+            LinearGradient(colors: [.clear, Color.Courtside.background], startPoint: .top, endPoint: .bottom)
+                .frame(height: 120)
+                .allowsHitTesting(false)
+                .ignoresSafeArea()
         }
         .fullScreenCover(isPresented: $showUpdates) {
             UpdatesView()

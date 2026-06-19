@@ -104,6 +104,7 @@ public struct OnboardingView: View {
                 }
             }
         }
+        .preferredColorScheme(.light)
     }
 }
 

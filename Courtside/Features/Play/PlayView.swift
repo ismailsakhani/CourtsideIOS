@@ -63,6 +63,12 @@ public struct PlayView: View {
                 .zIndex(1)
             }
         }
+        .overlay(alignment: .bottom) {
+            LinearGradient(colors: [.clear, Color.Courtside.background], startPoint: .top, endPoint: .bottom)
+                .frame(height: 120)
+                .allowsHitTesting(false)
+                .ignoresSafeArea()
+        }
         .task {
             viewModel.generateSlots()
         }
