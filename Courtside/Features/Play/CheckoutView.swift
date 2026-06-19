@@ -64,6 +64,7 @@ public struct CheckoutView: View {
                         .padding(.top, 24)
                     }
                     .scrollIndicators(.hidden)
+                    .scrollDismissesKeyboard(.immediately)
                 }
             }
             .navigationTitle("Checkout")
@@ -171,10 +172,16 @@ public struct CheckoutCouponRow: View {
 
     public var body: some View {
         HStack {
-            TextField("Apply Coupon / Voucher", text: $couponCode)
-                .font(.custom("PlusJakartaSans-SemiBold", size: 14))
-                .foregroundStyle(Color.Courtside.textPrimary)
-                .textInputAutocapitalization(.characters)
+            TextField(
+                "",
+                text: $couponCode,
+                prompt: Text("Apply Coupon / Voucher")
+                    .foregroundColor(Color.Courtside.textSecondary)
+            )
+            .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+            .foregroundStyle(Color.Courtside.textPrimary)
+            .textInputAutocapitalization(.characters)
+            .tint(Color.Courtside.primary)
 
             Spacer()
 

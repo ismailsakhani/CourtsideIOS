@@ -4,12 +4,6 @@ public struct EventDetailSheet: View {
     @Environment(\.dismiss) private var dismiss
     let event: EventItem
     @State private var rsvpConfirmed = false
-    @State private var showRSVPSheet = false
-    @State private var confirmationNumber = ""
-
-    private func generateConfirmationNumber() -> String {
-        "RSVP-\(Int.random(in: 10000...99999))"
-    }
 
     public var body: some View {
         ZStack {
@@ -102,12 +96,7 @@ public struct EventDetailSheet: View {
 
                     VStack {
                         Button {
-                            if event.price == "Free" {
-                                withAnimation { rsvpConfirmed = true }
-                            } else {
-                                confirmationNumber = generateConfirmationNumber()
-                                showRSVPSheet = true
-                            }
+                            withAnimation { rsvpConfirmed = true }
                         } label: {
                             Text(rsvpConfirmed ? "RSVP Confirmed ✓" : "RSVP — \(event.price)")
                                 .font(.custom("PlusJakartaSans-Bold", size: 14))
@@ -129,13 +118,6 @@ public struct EventDetailSheet: View {
                 }
             }
             .ignoresSafeArea(edges: .bottom)
-        }
-        .sheet(isPresented: $showRSVPSheet) {
-            withAnimation { rsvpConfirmed = true }
-        } content: {
-            RSVPConfirmationSheet(event: event, confirmationNumber: confirmationNumber)
-                .presentationDetents([.medium])
-                .presentationDragIndicator(.visible)
         }
     }
 }

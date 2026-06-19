@@ -41,9 +41,9 @@ public struct UpdatesView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         
                         // Header
-                        Text("Updates.")
+                        Text("Updates")
                             .font(.Courtside.heroDisplay)
-                            .foregroundStyle(.Courtside.textPrimary)
+                            .foregroundStyle(.Courtside.primary)
                             .padding(.horizontal, 24)
                             .padding(.bottom, 48)
                         
