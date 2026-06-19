@@ -19,7 +19,7 @@ public struct CategorySelectorView: View {
                         Text(category.rawValue)
                             .font(.custom("PlusJakartaSans-Regular", size: 12))
                             .kerning(1.5)
-                            .foregroundColor(selectedCategory == category ? .Courtside.textPrimary : .Courtside.textSecondary)
+                            .foregroundStyle(selectedCategory == category ? .Courtside.textPrimary : .Courtside.textSecondary)
                         
                         // Selection Indicator
                         Circle()

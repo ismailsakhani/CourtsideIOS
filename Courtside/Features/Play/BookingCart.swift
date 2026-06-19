@@ -1,57 +1,46 @@
-import Foundation
+import Observation
 import SwiftUI
-import Combine
 
-public struct SelectedSlot: Identifiable, Equatable {
-    public let id: String
-    public let date: Date
-    public let timeString: String
-    public let court: Court
-    public let category: GameCategory
-    
-    public init(date: Date, timeString: String, court: Court, category: GameCategory) {
-        self.date = Calendar.current.startOfDay(for: date)
-        self.timeString = timeString
-        self.court = court
-        self.category = category
-        self.id = "\(self.date.timeIntervalSince1970)-\(timeString)-\(court.id)"
-    }
-}
+@Observable
+@MainActor
+public final class BookingCart {
+    public var items: [CartItem] = []
 
-public class BookingCart: ObservableObject {
-    @Published public var items: [SelectedSlot] = []
-    
     public init() {}
-    
-    public func add(_ slot: SelectedSlot) {
-        if !items.contains(where: { $0.id == slot.id }) {
-            items.append(slot)
-            sortItems()
-        }
+
+    public func add(_ item: CartItem) {
+        guard !items.contains(where: { $0.id == item.id }) else { return }
+        items.append(item)
+        sortItems()
     }
-    
-    public func remove(_ id: String) {
+
+    public func remove(id: String) {
         items.removeAll { $0.id == id }
     }
-    
-    public func toggle(_ slot: SelectedSlot) {
-        if isSelected(id: slot.id) {
-            remove(slot.id)
+
+    public func toggle(_ item: CartItem) {
+        if isSelected(id: item.id) {
+            remove(id: item.id)
         } else {
-            add(slot)
+            add(item)
         }
     }
-    
+
     public func isSelected(id: String) -> Bool {
-        items.contains(where: { $0.id == id })
+        items.contains { $0.id == id }
     }
-    
+
+    public func clear() {
+        items.removeAll()
+    }
+
     private func sortItems() {
-        items.sort {
-            if $0.date == $1.date {
-                return $0.timeString < $1.timeString
+        items.sort { a, b in
+            guard let slotA = a.courtSlot, let slotB = b.courtSlot else { return false }
+            if slotA.date == slotB.date {
+                return slotA.timeString < slotB.timeString
             }
-            return $0.date < $1.date
+            return slotA.date < slotB.date
         }
     }
 }

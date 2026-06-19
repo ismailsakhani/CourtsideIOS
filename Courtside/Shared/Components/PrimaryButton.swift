@@ -13,11 +13,12 @@ public struct PrimaryButton: View {
         Button(action: action) {
             Text(title)
                 .font(.Courtside.button)
-                .foregroundColor(.Courtside.background)
+                .foregroundStyle(.Courtside.background)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 18)
                 .background(Color.Courtside.primary)
-                .cornerRadius(12)
+                .clipShape(.capsule)
         }
+        .actionShadow()
     }
 }

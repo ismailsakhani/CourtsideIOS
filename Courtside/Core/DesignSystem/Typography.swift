@@ -16,6 +16,16 @@ public extension Font {
         public static var heading: Font {
             .custom("PlusJakartaSans-Regular", size: 32)
         }
+
+        /// Semibold heading (Plus Jakarta Sans SemiBold)
+        public static var headingSemiBold: Font {
+            .custom("PlusJakartaSans-SemiBold", size: 20)
+        }
+
+        /// Semibold label (Plus Jakarta Sans SemiBold)
+        public static var labelSemiBold: Font {
+            .custom("PlusJakartaSans-SemiBold", size: 14)
+        }
         
         /// Call to action blocks (Plus Jakarta Sans)
         public static var callToAction: Font {

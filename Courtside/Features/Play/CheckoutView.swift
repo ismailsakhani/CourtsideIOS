@@ -1,220 +1,222 @@
 import SwiftUI
 
 public struct CheckoutView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @EnvironmentObject var cart: BookingCart
-    
-    private var sortedItems: [SelectedSlot] {
-        cart.items // Items are already sorted by the BookingCart, but we can group them
-    }
-    
+    @Environment(\.dismiss) private var dismiss
+    @Environment(BookingCart.self) private var cart
+
     @State private var useWalletBalance = false
-    
-    private var basePrice: Double { 1737.29 * Double(cart.items.count) }
-    private var gstAmount: Double { 312.71 * Double(cart.items.count) }
-    private var grandTotal: Double { 2050.00 * Double(cart.items.count) }
-    
+    @State private var bookingConfirmed = false
+    @State private var confirmationID = ""
+
+    private var subtotal: Double {
+        cart.items.reduce(0) { $0 + $1.numericPrice }
+    }
+    private var gstAmount: Double { subtotal * 0.18 }
+    private var grandTotal: Double { subtotal + gstAmount }
+
     public init() {}
-    
+
     public var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color.Courtside.background.ignoresSafeArea()
-                    .onTapGesture {
-                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    }
-                
+
                 if cart.items.isEmpty {
-                    VStack(spacing: 24) {
-                        Image(systemName: "tennis.racket")
-                            .font(.system(size: 48, weight: .light))
-                            .foregroundColor(.Courtside.textSecondary)
-                        
-                        Text("No slots selected")
-                            .font(.custom("PlusJakartaSans-Regular", size: 16))
-                            .foregroundColor(.Courtside.textSecondary)
-                    }
+                    EmptyStateView(
+                        icon: "tennis.racket",
+                        title: "No slots selected",
+                        subtitle: "Go to Play to select court slots."
+                    )
                 } else {
-                    ScrollView(showsIndicators: false) {
+                    ScrollView {
                         VStack(spacing: 32) {
-                            // 1. Selected Slots
                             VStack(spacing: 24) {
-                                ForEach(sortedItems) { item in
+                                ForEach(cart.items) { item in
                                     CheckoutItemCard(item: item)
                                 }
                             }
-                            
-                            // 2. Coupon & Voucher
+
                             CheckoutCouponRow()
-                            
-                            // 3. Wallet Balance
+
                             CheckoutWalletRow(useWalletBalance: $useWalletBalance)
-                            
-                            // 4. Payment Summary Math
-                            CheckoutPaymentSummary(basePrice: basePrice, gstAmount: gstAmount, grandTotal: grandTotal)
-                            
-                            // 5. Confirm Button
+
+                            CheckoutPaymentSummary(
+                                subtotal: subtotal,
+                                gstAmount: gstAmount,
+                                grandTotal: grandTotal
+                            )
+
                             PrimaryButton(title: "Confirm Booking") {
-                                cart.items.removeAll()
-                                presentationMode.wrappedValue.dismiss()
+                                confirmationID = generateConfirmationID()
+                                cart.clear()
+                                bookingConfirmed = true
                             }
                             .padding(.horizontal, 24)
                             .padding(.top, 16)
-                            
-                            // 6. Terms
+
                             Text("By confirming your booking, you agree to our Terms & Conditions and Cancellation Policy.")
                                 .font(.custom("PlusJakartaSans-Regular", size: 12))
-                                .foregroundColor(.Courtside.textSecondary)
+                                .foregroundStyle(Color.Courtside.textSecondary)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 40)
                                 .padding(.bottom, 40)
                         }
                         .padding(.top, 24)
                     }
+                    .scrollIndicators(.hidden)
                 }
             }
             .navigationTitle("Checkout")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(.Courtside.textPrimary)
+                            .foregroundStyle(Color.Courtside.textPrimary)
                     }
                 }
             }
         }
+        .fullScreenCover(isPresented: $bookingConfirmed) {
+            BookingConfirmationView(confirmationID: confirmationID) {
+                bookingConfirmed = false
+                dismiss()
+            }
+        }
+        .sensoryFeedback(.success, trigger: bookingConfirmed)
+    }
+
+    private func generateConfirmationID() -> String {
+        let number = Int.random(in: 10000...99999)
+        return "CST-\(number)"
     }
 }
 
+// MARK: - CheckoutItemCard
+
 public struct CheckoutItemCard: View {
-    @EnvironmentObject var cart: BookingCart
-    let item: SelectedSlot
-    
-    private var dateString: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE, d MMM"
-        return formatter.string(from: item.date).uppercased()
-    }
-    
+    @Environment(BookingCart.self) private var cart
+    let item: CartItem
+
     public var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(item.category.rawValue)
+                    Text(item.displaySubtitle)
                         .font(.custom("PlusJakartaSans-Regular", size: 10))
                         .kerning(1.5)
-                        .foregroundColor(.Courtside.primary)
-                    
-                    Text(item.court.name)
+                        .foregroundStyle(Color.Courtside.primary)
+
+                    Text(item.displayTitle)
                         .font(.custom("PlusJakartaSans-Regular", size: 20))
-                        .foregroundColor(.Courtside.textPrimary)
+                        .foregroundStyle(Color.Courtside.textPrimary)
                 }
-                
+
                 Spacer()
-                
-                Button(action: {
+
+                Text(item.displayPrice)
+                    .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+                    .foregroundStyle(Color.Courtside.primary)
+
+                Button {
                     withAnimation {
-                        cart.remove(item.id)
+                        cart.remove(id: item.id)
                     }
-                }) {
+                } label: {
                     Image(systemName: "trash")
                         .font(.system(size: 16, weight: .light))
-                        .foregroundColor(.Courtside.textSecondary)
+                        .foregroundStyle(Color.Courtside.textSecondary)
                 }
+                .padding(.leading, 12)
             }
-            
-            Divider()
-            
-            HStack {
-                HStack(spacing: 8) {
-                    Image(systemName: "calendar")
-                        .foregroundColor(.Courtside.textSecondary)
-                    Text(dateString)
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textPrimary)
-                }
-                
-                Spacer()
-                
-                HStack(spacing: 8) {
-                    Image(systemName: "clock")
-                        .foregroundColor(.Courtside.textSecondary)
-                    Text(item.timeString)
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textPrimary)
+
+            if let slot = item.courtSlot {
+                Divider()
+
+                HStack {
+                    HStack(spacing: 8) {
+                        Image(systemName: "calendar")
+                            .foregroundStyle(Color.Courtside.textSecondary)
+                        Text(slot.date, format: .dateTime.weekday(.abbreviated).day().month(.abbreviated))
+                            .font(.custom("PlusJakartaSans-Regular", size: 14))
+                            .foregroundStyle(Color.Courtside.textPrimary)
+                    }
+
+                    Spacer()
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "clock")
+                            .foregroundStyle(Color.Courtside.textSecondary)
+                        Text(slot.timeString)
+                            .font(.custom("PlusJakartaSans-Regular", size: 14))
+                            .foregroundStyle(Color.Courtside.textPrimary)
+                    }
                 }
             }
         }
         .padding(24)
         .background(Color.white)
-        .cornerRadius(24)
-        .shadow(color: Color.black.opacity(0.04), radius: 12, x: 0, y: 4)
+        .clipShape(.rect(cornerRadius: 24))
+        .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
         .padding(.horizontal, 24)
     }
 }
 
+// MARK: - CheckoutCouponRow
+
 public struct CheckoutCouponRow: View {
-    @State private var couponCode: String = ""
-    
+    @State private var couponCode = ""
+
     public var body: some View {
         HStack {
-            ZStack(alignment: .leading) {
-                if couponCode.isEmpty {
-                    Text("Apply Coupon / Voucher")
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textPrimary.opacity(0.6))
-                }
-                TextField("", text: $couponCode)
-                    .font(.custom("PlusJakartaSans-SemiBold", size: 14))
-                    .foregroundColor(.Courtside.textPrimary)
-                    .autocapitalization(.allCharacters)
-            }
-            
+            TextField("Apply Coupon / Voucher", text: $couponCode)
+                .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+                .foregroundStyle(Color.Courtside.textPrimary)
+                .textInputAutocapitalization(.characters)
+
             Spacer()
-            
-            Button(action: {
-                // Apply action
-                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-            }) {
-                Text("Apply")
-                    .font(.custom("PlusJakartaSans-SemiBold", size: 14))
-                    .foregroundColor(couponCode.isEmpty ? .Courtside.textSecondary : .Courtside.primary)
-            }
+
+            Button("Apply") {}
+                .font(.custom("PlusJakartaSans-SemiBold", size: 14))
+                .foregroundStyle(couponCode.isEmpty ? Color.Courtside.textSecondary : Color.Courtside.primary)
+                .disabled(couponCode.isEmpty)
         }
         .padding(20)
         .background(Color.white)
-        .cornerRadius(16)
+        .clipShape(.rect(cornerRadius: 16))
         .padding(.horizontal, 24)
     }
 }
 
+// MARK: - CheckoutWalletRow
+
 public struct CheckoutWalletRow: View {
     @Binding var useWalletBalance: Bool
-    
+    @State private var showAddMoney = false
+
     public var body: some View {
         VStack(spacing: 16) {
             HStack {
                 HStack(spacing: 12) {
                     Image(systemName: "creditcard.fill")
-                        .foregroundColor(.Courtside.primary)
+                        .foregroundStyle(Color.Courtside.primary)
                     Text("Wallet Balance (₹500)")
                         .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textPrimary)
+                        .foregroundStyle(Color.Courtside.textPrimary)
                 }
                 Spacer()
-                Button(action: {
-                    withAnimation {
+                Button {
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
                         useWalletBalance.toggle()
                     }
-                }) {
+                } label: {
                     ZStack {
                         Capsule()
                             .fill(useWalletBalance ? Color.Courtside.primary : Color.Courtside.textSecondary.opacity(0.3))
                             .frame(width: 50, height: 30)
-                        
+
                         Circle()
                             .fill(Color.white)
                             .frame(width: 26, height: 26)
@@ -222,75 +224,75 @@ public struct CheckoutWalletRow: View {
                             .offset(x: useWalletBalance ? 10 : -10)
                     }
                 }
+                .accessibilityLabel(useWalletBalance ? "Wallet enabled" : "Wallet disabled")
             }
-            
+
             HStack {
                 Spacer()
-                Button(action: {}) {
-                    Text("+ Add Money")
-                        .font(.custom("PlusJakartaSans-SemiBold", size: 12))
-                        .foregroundColor(.Courtside.primary)
+                Button("+ Add Money") {
+                    showAddMoney = true
                 }
+                .font(.custom("PlusJakartaSans-SemiBold", size: 12))
+                .foregroundStyle(Color.Courtside.primary)
             }
         }
         .padding(20)
         .background(Color.white)
-        .cornerRadius(16)
+        .clipShape(.rect(cornerRadius: 16))
         .padding(.horizontal, 24)
+        .sheet(isPresented: $showAddMoney) {
+            AddMoneySheet()
+        }
     }
 }
 
+// MARK: - CheckoutPaymentSummary
+
 public struct CheckoutPaymentSummary: View {
-    let basePrice: Double
+    let subtotal: Double
     let gstAmount: Double
     let grandTotal: Double
-    
+
     public var body: some View {
         VStack(spacing: 16) {
             Text("Payment Summary")
                 .font(.custom("PlusJakartaSans-SemiBold", size: 16))
-                .foregroundColor(.Courtside.textPrimary)
+                .foregroundStyle(Color.Courtside.textPrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            
+
             VStack(spacing: 12) {
-                HStack {
-                    Text("Slot Base Price")
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textSecondary)
-                    Spacer()
-                    Text(String(format: "₹%.2f", basePrice))
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textPrimary)
-                }
-                
-                HStack {
-                    Text("GST (18%)")
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textSecondary)
-                    Spacer()
-                    Text(String(format: "₹%.2f", gstAmount))
-                        .font(.custom("PlusJakartaSans-Regular", size: 14))
-                        .foregroundColor(.Courtside.textPrimary)
-                }
-                
-                Divider()
-                    .padding(.vertical, 8)
-                
+                summaryRow(label: "Subtotal", value: subtotal)
+                summaryRow(label: "GST (18%)", value: gstAmount)
+
+                Divider().padding(.vertical, 8)
+
                 HStack {
                     Text("Grand Total")
                         .font(.custom("PlusJakartaSans-SemiBold", size: 16))
-                        .foregroundColor(.Courtside.textPrimary)
+                        .foregroundStyle(Color.Courtside.textPrimary)
                     Spacer()
-                    Text(String(format: "₹%.2f", grandTotal))
+                    Text(grandTotal, format: .currency(code: "INR").presentation(.isoCode))
                         .font(.custom("PlusJakartaSans-SemiBold", size: 18))
-                        .foregroundColor(.Courtside.primary)
+                        .foregroundStyle(Color.Courtside.primary)
                 }
             }
         }
         .padding(24)
         .background(Color.white)
-        .cornerRadius(24)
-        .shadow(color: Color.black.opacity(0.04), radius: 12, x: 0, y: 4)
+        .clipShape(.rect(cornerRadius: 24))
+        .shadow(color: .black.opacity(0.04), radius: 12, x: 0, y: 4)
         .padding(.horizontal, 24)
+    }
+
+    private func summaryRow(label: String, value: Double) -> some View {
+        HStack {
+            Text(label)
+                .font(.custom("PlusJakartaSans-Regular", size: 14))
+                .foregroundStyle(Color.Courtside.textSecondary)
+            Spacer()
+            Text(value, format: .currency(code: "INR").presentation(.isoCode))
+                .font(.custom("PlusJakartaSans-Regular", size: 14))
+                .foregroundStyle(Color.Courtside.textPrimary)
+        }
     }
 }

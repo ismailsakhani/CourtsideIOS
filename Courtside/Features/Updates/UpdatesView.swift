@@ -1,47 +1,49 @@
 import SwiftUI
 
 public struct UpdatesView: View {
-    @Environment(\.presentationMode) var presentationMode
-    
+    @Environment(\.dismiss) private var dismiss
+    @State private var allRead = false
+
     public init() {}
-    
+
     public var body: some View {
         ZStack {
             Color.Courtside.background.ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
                 // Fixed Top Navigation
                 HStack {
                     Button(action: {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     }) {
                         Image(systemName: "chevron.left")
                             .font(.system(size: 20, weight: .light))
-                            .foregroundColor(.Courtside.textPrimary)
+                            .foregroundStyle(.Courtside.textPrimary)
                     }
-                    
+
                     Spacer()
-                    
+
                     Button(action: {
-                        // Mark all as read action
+                        withAnimation { allRead = true }
                     }) {
-                        Text("Mark all read")
+                        Text(allRead ? "All Read" : "Mark all read")
                             .font(.custom("PlusJakartaSans-Regular", size: 14))
-                            .foregroundColor(.Courtside.textSecondary)
+                            .foregroundStyle(allRead ? .Courtside.primary : .Courtside.textSecondary)
                     }
+                    .disabled(allRead)
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 10)
                 .padding(.bottom, 24)
                 
                 // Scrollable Content
-                ScrollView(showsIndicators: false) {
+                ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
                         
                         // Header
                         Text("Updates.")
                             .font(.Courtside.heroDisplay)
-                            .foregroundColor(.Courtside.textPrimary)
+                            .foregroundStyle(.Courtside.textPrimary)
                             .padding(.horizontal, 24)
                             .padding(.bottom, 48)
                         
@@ -49,27 +51,27 @@ public struct UpdatesView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("TODAY")
                                 .font(.custom("PlusJakartaSans-Regular", size: 12))
-                                .foregroundColor(.Courtside.textSecondary)
+                                .foregroundStyle(.Courtside.textSecondary)
                                 .kerning(2)
                                 .padding(.horizontal, 24)
                                 .padding(.bottom, 24)
                             
                             // Unread Item 1
                             UpdateCell(
-                                isUnread: true,
+                                isUnread: !allRead,
                                 title: "Match Confirmed",
                                 bodyText: "Padel Court 3 has been reserved for you and Michael. The concierge has been notified to prepare towels.",
                                 time: "JUST NOW"
                             )
-                            
+
                             Divider()
                                 .background(Color.Courtside.textPrimary.opacity(0.05))
                                 .padding(.horizontal, 24)
                                 .padding(.vertical, 24)
-                            
+
                             // Unread Item 2
                             UpdateCell(
-                                isUnread: true,
+                                isUnread: !allRead,
                                 title: "Summer Solstice Mixer",
                                 bodyText: "You are invited to an exclusive evening on the Center Court. RSVP is required to secure your attendance.",
                                 time: "2 HOURS AGO"
@@ -81,7 +83,7 @@ public struct UpdatesView: View {
                         VStack(alignment: .leading, spacing: 0) {
                             Text("THIS WEEK")
                                 .font(.custom("PlusJakartaSans-Regular", size: 12))
-                                .foregroundColor(.Courtside.textSecondary)
+                                .foregroundStyle(.Courtside.textSecondary)
                                 .kerning(2)
                                 .padding(.horizontal, 24)
                                 .padding(.bottom, 24)
@@ -97,9 +99,10 @@ public struct UpdatesView: View {
                         .padding(.bottom, 80)
                     }
                 }
+                .scrollIndicators(.hidden)
             }
         }
-        .navigationBarHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
@@ -129,17 +132,17 @@ public struct UpdateCell: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text(title)
                     .font(.custom("PlusJakartaSans-Regular", size: 20))
-                    .foregroundColor(isUnread ? .Courtside.textPrimary : .Courtside.textSecondary)
+                    .foregroundStyle(isUnread ? .Courtside.textPrimary : .Courtside.textSecondary)
                 
                 Text(bodyText)
                     .font(.custom("PlusJakartaSans-Regular", size: 14))
-                    .foregroundColor(.Courtside.textSecondary)
+                    .foregroundStyle(.Courtside.textSecondary)
                     .lineSpacing(4)
                     .lineLimit(3)
                 
                 Text(time)
                     .font(.custom("PlusJakartaSans-Regular", size: 10))
-                    .foregroundColor(.Courtside.textSecondary)
+                    .foregroundStyle(.Courtside.textSecondary)
                     .kerning(1.5)
                     .padding(.top, 8)
             }

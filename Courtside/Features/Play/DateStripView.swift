@@ -31,10 +31,10 @@ public struct DateStripView: View {
             Text(currentMonthString)
                 .font(.custom("PlusJakartaSans-Regular", size: 12))
                 .kerning(2)
-                .foregroundColor(.Courtside.textSecondary)
+                .foregroundStyle(.Courtside.textSecondary)
                 .padding(.horizontal, 24)
             
-            ScrollView(.horizontal, showsIndicators: false) {
+            ScrollView(.horizontal) {
             HStack(spacing: 32) {
                 // Calendar Picker Button
                 Button(action: {
@@ -42,7 +42,7 @@ public struct DateStripView: View {
                 }) {
                     Image(systemName: "calendar")
                         .font(.system(size: 28, weight: .light))
-                        .foregroundColor(.Courtside.textPrimary)
+                        .foregroundStyle(.Courtside.textPrimary)
                         .padding(.vertical, 8) // Visually aligns with the date stack
                 }
                 
@@ -56,11 +56,11 @@ public struct DateStripView: View {
                             Text(dayString(for: date))
                                 .font(.custom("PlusJakartaSans-Regular", size: 10))
                                 .kerning(1.5)
-                                .foregroundColor(.Courtside.textSecondary)
+                                .foregroundStyle(.Courtside.textSecondary)
                             
                             Text(dateString(for: date))
                                 .font(.custom("PlusJakartaSans-Regular", size: 20))
-                                .foregroundColor(isSelected(date) ? .Courtside.textPrimary : .Courtside.textSecondary)
+                                .foregroundStyle(isSelected(date) ? .Courtside.textPrimary : .Courtside.textSecondary)
                             
                             // Selection Indicator
                             Circle()
@@ -72,23 +72,24 @@ public struct DateStripView: View {
             }
             .padding(.horizontal, 24)
         }
+        .scrollIndicators(.hidden)
         .sheet(isPresented: $showCalendar) {
-            NavigationView {
+            NavigationStack {
                 VStack {
                     DatePicker("Select Date", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(.graphical)
                         .padding()
-                        .accentColor(.Courtside.primary)
+                        .tint(.Courtside.primary)
                     Spacer()
                 }
                 .navigationTitle("Select Date")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .navigationBarTrailing) {
+                    ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") {
                             showCalendar = false
                         }
-                        .foregroundColor(.Courtside.primary)
+                        .foregroundStyle(.Courtside.primary)
                     }
                 }
             }

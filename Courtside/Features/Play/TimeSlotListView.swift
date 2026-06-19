@@ -5,30 +5,41 @@ public struct TimeSlotListView: View {
     let selectedDate: Date
     let selectedCategory: GameCategory
     let onBookedTap: () -> Void
-    @EnvironmentObject var cart: BookingCart
-    
-    public init(timeSlots: Binding<[TimeSlot]>, selectedDate: Date, selectedCategory: GameCategory, onBookedTap: @escaping () -> Void) {
+    @Environment(BookingCart.self) private var cart
+
+    public init(
+        timeSlots: Binding<[TimeSlot]>,
+        selectedDate: Date,
+        selectedCategory: GameCategory,
+        onBookedTap: @escaping () -> Void
+    ) {
         self._timeSlots = timeSlots
         self.selectedDate = selectedDate
         self.selectedCategory = selectedCategory
         self.onBookedTap = onBookedTap
     }
-    
+
     public var body: some View {
-        LazyVStack(alignment: .leading, spacing: 48) {
+        VStack(alignment: .leading, spacing: 20) {
             ForEach($timeSlots, id: \.id) { $slot in
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 12) {
                     Text(slot.timeString)
-                        .font(.custom("PlusJakartaSans-Regular", size: 24))
-                        .foregroundColor(.Courtside.textPrimary)
-                    
-                    ScrollView(.horizontal, showsIndicators: false) {
+                        .font(.custom("PlusJakartaSans-Regular", size: 18))
+                        .foregroundStyle(Color.Courtside.textPrimary)
+
+                    ScrollView(.horizontal) {
                         HStack(spacing: 12) {
                             ForEach(slot.courts.indices, id: \.self) { index in
                                 let status = slot.courts[index]
-                                let selectedSlot = SelectedSlot(date: selectedDate, timeString: slot.timeString, court: status.court, category: selectedCategory)
-                                let isSelected = cart.isSelected(id: selectedSlot.id)
-                                
+                                let selectedSlot = SelectedSlot(
+                                    date: selectedDate,
+                                    timeString: slot.timeString,
+                                    court: status.court,
+                                    category: selectedCategory
+                                )
+                                let cartItem = CartItem.courtSlot(selectedSlot)
+                                let isSelected = cart.isSelected(id: cartItem.id)
+
                                 SlotPillView(
                                     status: status,
                                     isPeak: slot.isPeak,
@@ -38,17 +49,18 @@ public struct TimeSlotListView: View {
                                         onBookedTap()
                                     } else {
                                         withAnimation {
-                                            cart.toggle(selectedSlot)
+                                            cart.toggle(cartItem)
                                         }
                                     }
                                 }
                             }
                         }
                         .padding(.horizontal, 24)
-                        // Negative padding to allow scroll bleed
-                        .padding(.horizontal, -24)
                     }
+                    .scrollIndicators(.hidden)
+                    .padding(.horizontal, -24)
                 }
+                .id(slot.id)
             }
         }
         .padding(.horizontal, 24)

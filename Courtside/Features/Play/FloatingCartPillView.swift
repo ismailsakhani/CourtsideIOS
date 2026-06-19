@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct FloatingCartPillView: View {
-    @EnvironmentObject var cart: BookingCart
+    @Environment(BookingCart.self) private var cart
     let action: () -> Void
     
     public init(action: @escaping () -> Void) {
@@ -14,7 +14,7 @@ public struct FloatingCartPillView: View {
                 // Number of slots
                 Text("\(cart.items.count) \(cart.items.count == 1 ? "Slot" : "Slots") Selected")
                     .font(.custom("PlusJakartaSans-Regular", size: 14))
-                    .foregroundColor(.white)
+                    .foregroundStyle(.white)
                 
                 Spacer()
                 
@@ -25,7 +25,7 @@ public struct FloatingCartPillView: View {
                     Image(systemName: "chevron.right")
                         .font(.system(size: 12, weight: .semibold))
                 }
-                .foregroundColor(.Courtside.primary)
+                .foregroundStyle(.Courtside.primary)
             }
             .padding(.horizontal, 24)
             .padding(.vertical, 16)
@@ -40,6 +40,6 @@ public struct FloatingCartPillView: View {
             )
         }
         .padding(.horizontal, 24)
-        // Transition will be handled by the parent view
+        .sensoryFeedback(.impact(weight: .light), trigger: cart.items.count)
     }
 }

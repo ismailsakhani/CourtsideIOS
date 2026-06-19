@@ -2,63 +2,46 @@ import SwiftUI
 
 public struct MainTabView: View {
     @State private var selectedTab = 0
-    @StateObject private var cart = BookingCart()
+    @State private var cart = BookingCart()
     @State private var showCheckout = false
-    
+
     public init() {}
-    
+
     public var body: some View {
         ZStack {
             TabView(selection: $selectedTab) {
-
-                HomeView(selectedTab: $selectedTab)
-                    .tag(0)
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Home")
-                    }
-                
-                PlayView()
-                    .tag(1)
-                    .tabItem {
-                        Image(systemName: "tennis.racket")
-                        Text("Play")
-                    }
-                
-                LoungeView()
-                    .tag(2)
-                    .tabItem {
-                        Image(systemName: "cup.and.saucer.fill")
-                        Text("Lounge")
-                    }
-                
-                Text("Profile")
-                    .tag(3)
-                    .tabItem {
-                        Image(systemName: "person")
-                        Text("Profile")
-                    }
+                Tab("Home", systemImage: "house", value: 0) {
+                    HomeView(selectedTab: $selectedTab)
+                }
+                Tab("Play", systemImage: "tennis.racket", value: 1) {
+                    PlayView()
+                }
+                Tab("Lounge", systemImage: "cup.and.saucer.fill", value: 2) {
+                    LoungeView()
+                }
+                Tab("Profile", systemImage: "person", value: 3) {
+                    ProfileView()
+                }
             }
-            .accentColor(.Courtside.primary)
-            
-            // Global Floating Checkout Pill
+            .tint(.Courtside.primary)
+
             if !cart.items.isEmpty {
                 VStack {
                     Spacer()
                     FloatingCartPillView {
                         showCheckout = true
                     }
-                    .padding(.bottom, 64) // Just above the tab bar
+                    .padding(.bottom, 64)
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.spring(response: 0.4, dampingFraction: 0.8), value: cart.items.isEmpty)
                 .zIndex(1)
             }
         }
-        .environmentObject(cart)
+        .environment(cart)
         .sheet(isPresented: $showCheckout) {
             CheckoutView()
-                .environmentObject(cart)
+                .environment(cart)
         }
     }
 }

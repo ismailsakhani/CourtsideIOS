@@ -1,46 +1,44 @@
 import SwiftUI
 
-public struct EventCarouselCard: View {
-    let title: String
-    let date: String
-    let location: String
-    
-    public init(title: String, date: String, location: String) {
-        self.title = title
-        self.date = date
-        self.location = location
-    }
-    
-    public var body: some View {
+struct EventCarouselCard: View {
+    let event: EventItem
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(date)
+                Text("\(event.day) \(event.month) • \(event.time)")
                     .font(.custom("PlusJakartaSans-Regular", size: 12))
-                    .foregroundColor(.Courtside.primary)
+                    .foregroundStyle(.Courtside.primary)
                     .kerning(1.5)
-                
-                Text(title)
+
+                Text(event.title)
                     .font(.custom("PlusJakartaSans-Regular", size: 24))
-                    .foregroundColor(.Courtside.textPrimary)
+                    .foregroundStyle(.Courtside.textPrimary)
                     .lineLimit(2)
             }
-            
+
             Spacer()
-            
+
             HStack {
-                Text(location)
+                Text(event.location)
                     .font(.custom("PlusJakartaSans-Regular", size: 14))
-                    .foregroundColor(.Courtside.textSecondary)
-                
+                    .foregroundStyle(.Courtside.textSecondary)
+
                 Spacer()
-                
+
                 Image(systemName: "arrow.right")
                     .font(.system(size: 16, weight: .light))
-                    .foregroundColor(.Courtside.textPrimary)
+                    .foregroundStyle(.Courtside.primary)
             }
         }
         .padding(24)
         .frame(width: 260, height: 260)
-        .background(Color.Courtside.secondaryBackground)
+        .background(Color.white)
+        .clipShape(.rect(cornerRadius: 24))
+        .shadow(color: Color.black.opacity(0.08), radius: 24, x: 0, y: 8)
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(Color.Courtside.textPrimary.opacity(0.05), lineWidth: 0.5)
+        )
     }
 }

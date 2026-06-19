@@ -21,27 +21,28 @@ public struct SlotPillView: View {
                 HStack(spacing: 6) {
                     Text(status.court.name)
                         .font(.custom("PlusJakartaSans-Regular", size: 14))
-                    
+
                     if isPeak && !status.isBooked {
                         Image(systemName: "flame.fill")
                             .font(.system(size: 10))
                     }
                 }
-                
+
                 Text("₹2050")
                     .font(.custom("PlusJakartaSans-SemiBold", size: 12))
-                    .foregroundColor(textColor.opacity(0.8))
+                    .foregroundStyle(textColor.opacity(0.8))
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .foregroundColor(textColor)
+            .foregroundStyle(textColor)
             .background(backgroundColor)
-            .cornerRadius(12)
+            .clipShape(.rect(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(borderColor, lineWidth: 0.5)
             )
         }
+        .sensoryFeedback(.impact(weight: .medium), trigger: isSelected)
     }
     
     private var textColor: Color {

@@ -22,6 +22,10 @@ public extension Color {
     }
 }
 
+extension ShapeStyle where Self == Color {
+    static var Courtside: Color.Courtside.Type { Color.Courtside.self }
+}
+
 // Helper for Hex Colors
 extension Color {
     init(hex: String) {
